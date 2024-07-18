@@ -21,7 +21,7 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'mkdir d:\a\1\MobEAD' 
+    script: 'mkdir d:\a\1\unyleya_projeto_cicd_Jonatas' 
     #workingDirectory: # Optional
     #failOnStderr: false # Optional
 
@@ -70,8 +70,8 @@ steps:
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: 'JaCoCo' #Options: cobertura, jaCoCo
-    summaryFileLocation: $(System.DefaultWorkingDirectory)/mobEAD/**/site/cobertura/coverage.xml
-    pathToSources: $(System.DefaultWorkingDirectory)/mobEAD/
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/unyleya_projeto_cicd_Jonatas/**/site/cobertura/coverage.xml
+    pathToSources: $(System.DefaultWorkingDirectory)/unyleya_projeto_cicd_Jonatas/
     #reportDirectory: # Optional
     #additionalCodeCoverageFiles: # Optional
     #failIfCoverageEmpty: false # Optional
@@ -82,5 +82,5 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    artifactName: 'MobEAD'
+    artifactName: 'unyleya_projeto_cicd_Jonatas'
     pathToPublish: 'd:\a\1\a'
