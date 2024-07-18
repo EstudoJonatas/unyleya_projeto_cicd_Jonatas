@@ -51,13 +51,10 @@ steps:
 
 
 -  task: VSTest@2
-   inputs:
+  inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-   testAssemblyVer2: | 
-  **Test.dll 
-  !***TestAdapter.dll 
-  !**\obj** 
+    testAssemblyVer2: '$(Build.SourcesDirectory)**\*test*.dll,!**\*TestAdapter.dll,!**\obj\**'
     
  
 - task: SonarCloudAnalyze@1
