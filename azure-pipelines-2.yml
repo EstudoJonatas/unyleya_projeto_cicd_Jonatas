@@ -50,11 +50,11 @@ steps:
     configuration: '$(buildConfiguration)'
 
 
--  task: VSTest@2
+- task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testAssemblyVer2: '$(Build.SourcesDirectory) **\bin\**\*test.dll,**\bin\**\*tests.dll'
+    testAssemblyVer2: '$(Build.SourcesDirectory)/test**.js'
     
  
 - task: SonarCloudAnalyze@1
