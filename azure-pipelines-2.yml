@@ -51,12 +51,13 @@ steps:
 
 
 -  task: VSTest@2
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\*test*.dll,!**\*TestAdapter.dll,!**\obj\**'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
+   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+   testAssemblyVer2: | 
+  **Test.dll 
+  !***TestAdapter.dll 
+  !**\obj** 
     
  
 - task: SonarCloudAnalyze@1
