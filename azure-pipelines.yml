@@ -57,39 +57,20 @@ steps:
     configuration: '$(buildConfiguration)'
 
 
+
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testAssemblyVer2: '$(Build.SourcesDirectory)/test**.js'
-    
+
+task: SonarQubeAnalyze@4
+
+task: SonarQubePublish@4
+inputs:
+pollingTimeoutSec: '300'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+       artifactName: # 'drop'
+
  
-- task: SonarCloudAnalyze@1
-  displayName: 'Run Code Analysis'
-  continueOnError: true
-
-- task: SonarCloudPublish@1
-  displayName: 'Publish Quality Gate Result'
-  continueOnError: true
-
-# Publish code coverage results
-# Publish Cobertura or JaCoCo code coverage results from a build
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'JaCoCo' #Options: cobertura, jaCoCo
-    summaryFileLocation: $(System.DefaultWorkingDirectory)/MobEAD/**/site/cobertura/coverage.xml
-    pathToSources: $(System.DefaultWorkingDirectory)/MobEAD/
-    #reportDirectory: # Optional
-    #additionalCodeCoverageFiles: # Optional
-    #failIfCoverageEmpty: false # Optional
-- task: CopyFiles@2
-  inputs:
-    contents: '**/*.*'
-    targetFolder: $(build.artifactStagingDirectory)
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: 'MobEAD'
-    pathToPublish: 'd:\a\1\a'
- 
-
