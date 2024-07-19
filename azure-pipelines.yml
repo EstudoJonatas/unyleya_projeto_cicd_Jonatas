@@ -4,21 +4,15 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- main
+- master
 
 pool:
   vmImage: 'windows-latest'
-
-# Command line
-# Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-
-
 
 steps:
 
@@ -31,47 +25,62 @@ steps:
     #workingDirectory: # Optional
     #failOnStderr: false # Optional
 
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SONAR Analia'
+    organization: 'promove'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'analia'
+    cliProjectName: Analia
+    cliSources: '$(System.DefaultWorkingDirectory)'
+  continueOnError: true
 - task: NuGetToolInstaller@1
+
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
 
-
-#- task: SonarQubePrepare@4
-#  inputs:
-#    SonarQube: 'Sonarqube Osanam Azure'
-#    scannerMode: 'CLI'
-#    configMode: 'manual'
-#    cliProjectKey: 'Unyleya_-_DevOps_Unyleya_-_DevOps'
-#    cliProjectName: 'Unyleya - DevOps'
-#    cliSources: '$(System.DefaultWorkingDirectory)'
-#
-#- powershell: |
-#    $params = "$env:SONARQUBE_SCANNER_PARAMS" -replace '"sonar.branch.name":"[\w/,-.]*"\,?'
-#    Write-Host "##vso[task.setvariable variable=SONARQUBE_SCANNER_PARAMS]$params"
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DeployIisAppPath="Default Web Site"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DeployIisAppPath="Default Web Site" /p:DesktopBuildPackageLocation="d:\a\1\MobEAD"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
 
 
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-#- task: SonarQubeAnalyze@4
-
-#- task: SonarQubePublish@4
-#  inputs:
-#    pollingTimeoutSec: '300'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-       artifactName: # 'drop'
-
+    testAssemblyVer2: '$(Build.SourcesDirectory)/test**.js'
+    
  
+- task: SonarCloudAnalyze@1
+  displayName: 'Run Code Analysis'
+  continueOnError: true
 
+- task: SonarCloudPublish@1
+  displayName: 'Publish Quality Gate Result'
+  continueOnError: true
+
+# Publish code coverage results
+# Publish Cobertura or JaCoCo code coverage results from a build
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo' #Options: cobertura, jaCoCo
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/MobEAD/**/site/cobertura/coverage.xml
+    pathToSources: $(System.DefaultWorkingDirectory)/MobEAD/
+    #reportDirectory: # Optional
+    #additionalCodeCoverageFiles: # Optional
+    #failIfCoverageEmpty: false # Optional
+- task: CopyFiles@2
+  inputs:
+    contents: '**/*.*'
+    targetFolder: $(build.artifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: 'MobEAD'
+    pathToPublish: 'd:\a\1\a'
